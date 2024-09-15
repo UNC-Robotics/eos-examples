@@ -1,0 +1,6 @@
+{% set experiment_type = 'color_mixing_3' %}
+{% set container = 'c_c' %}
+{% set color_mixer = 'color_mixer_3' %}
+{% set color_analyzer = 'color_analyzer_3' %}
+{% set target_color = '[14, 107, 20]' %}
+{% include 'color_lab/common/color_mixing_experiment.yml' %}

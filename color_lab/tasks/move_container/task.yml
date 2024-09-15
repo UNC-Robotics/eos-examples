@@ -1,0 +1,14 @@
+type: Move Container
+description: Move a container from one location to another using a robotic arm
+
+device_types:
+  - robot_arm
+
+input_containers:
+  beaker:
+    type: beaker
+
+input_parameters:
+  target_location:
+    type: string
+    description: The location to move the container to

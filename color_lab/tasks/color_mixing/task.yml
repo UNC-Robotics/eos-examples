@@ -1,0 +1,74 @@
+type: Color Mixing
+description: Incrementally dispense and mix colors in a beaker
+
+device_types:
+  - color_mixer
+
+input_containers:
+  beaker:
+    type: beaker
+
+input_parameters:
+  cyan_volume:
+    type: decimal
+    unit: mL
+    min: 0
+    max: 50
+    description: The volume of cyan color to dispense
+  cyan_strength:
+    type: decimal
+    unit: percent
+    min: 0
+    max: 100
+    description: The strength of cyan color (where 100% is pure cyan)
+  magenta_volume:
+    type: decimal
+    unit: mL
+    min: 0
+    max: 50
+    description: The volume of magenta color to dispense
+  magenta_strength:
+    type: decimal
+    unit: percent
+    min: 0
+    max: 100
+    description: The strength of magenta color (where 100% is pure magenta)
+  yellow_volume:
+    type: decimal
+    unit: mL
+    min: 0
+    max: 50
+    description: The volume of yellow color to dispense
+  yellow_strength:
+    type: decimal
+    unit: percent
+    min: 0
+    max: 100
+    description: The strength of yellow color (where 100% is pure yellow)
+  black_volume:
+    type: decimal
+    unit: mL
+    min: 0
+    max: 50
+    description: The volume of black color to dispense
+  black_strength:
+    type: decimal
+    unit: percent
+    min: 0
+    max: 100
+    description: The strength of black color (where 100% is pure black)
+
+  mixing_time:
+    type: integer
+    unit: sec
+    description: The amount of time to mix the contents of the container
+  mixing_speed:
+    type: integer
+    unit: n/a
+    description: The speed at which to stir the contents of the container
+
+output_parameters:
+  total_color_volume:
+    type: decimal
+    unit: mL
+    description: The total volume of dispensed color

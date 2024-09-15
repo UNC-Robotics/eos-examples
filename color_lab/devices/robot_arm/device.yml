@@ -1,0 +1,6 @@
+type: robot_arm
+description: Robotic arm for moving containers
+
+initialization_parameters:
+  port: 5002
+  locations: []

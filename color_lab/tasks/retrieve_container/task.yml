@@ -1,0 +1,18 @@
+type: Retrieve Container
+description: Retrieve a container from a container storage unit using a robotic arm
+
+device_types:
+  - robot_arm
+
+input_containers:
+  beaker:
+    type: beaker
+
+input_parameters:
+  target_location:
+    type: string
+    description: The location to move the container to
+
+output_containers:
+  beaker:
+    type: beaker

@@ -1,0 +1,46 @@
+type: Score Color
+description: Score a color based on how close it is to an expected color
+
+input_parameters:
+  red:
+    type: integer
+    unit: n/a
+    min: 0
+    max: 255
+    description: The red component of the color
+  green:
+    type: integer
+    unit: n/a
+    min: 0
+    max: 255
+    description: The green component of the color
+  blue:
+    type: integer
+    unit: n/a
+    min: 0
+    max: 255
+    description: The blue component of the color
+  total_color_volume:
+    type: decimal
+    unit: mL
+    min: 0
+    description: The total volume of the color in the container for which the RGB values were measured
+  max_total_color_volume:
+    type: decimal
+    unit: mL
+    min: 0
+    description: The maximum total volume of the color that can be in the container
+  target_color:
+    type: list
+    element_type: integer
+    description: The expected color
+
+output_parameters:
+  loss:
+    type: decimal
+    unit: n/a
+    description: Total loss of the color compared to the expected color
+  color_distance:
+    type: decimal
+    unit: n/a
+    description: The distance between the color and the expected color

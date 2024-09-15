@@ -1,0 +1,14 @@
+type: Store Container
+description: Store a container at a container storage
+
+device_types:
+  - robot_arm
+
+input_containers:
+  beaker:
+    type: beaker
+
+input_parameters:
+  storage_location:
+    type: string
+    description: The location to store the container at

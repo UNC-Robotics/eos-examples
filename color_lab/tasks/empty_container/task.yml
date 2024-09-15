@@ -1,0 +1,17 @@
+type: Empty Container
+description: Move a container to a location and empty it
+
+device_types:
+  - robot_arm
+
+input_containers:
+  beaker:
+    type: beaker
+
+input_parameters:
+  emptying_location:
+    type: string
+    description: The location to empty the container at
+  target_location:
+    type: string
+    description: The location to move the container to after emptying

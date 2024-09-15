@@ -1,0 +1,115 @@
+type: {{ experiment_type }}
+description: Experiment to find optimal parameters to synthesize a desired color
+
+labs:
+  - color_lab
+
+tasks:
+  - id: retrieve_container
+    type: Retrieve Container
+    description: Get a container from storage and move it to the color dispenser
+    devices:
+      - lab_id: color_lab
+        id: robot_arm
+    containers:
+      beaker: {{ container }}
+    parameters:
+      target_location: {{ color_mixer }}
+    dependencies: []
+
+  - id: mix_colors
+    type: Color Mixing
+    description: Mix the colors in the container
+    devices:
+      - lab_id: color_lab
+        id: {{ color_mixer }}
+    containers:
+      beaker: retrieve_container.beaker
+    parameters:
+      cyan_volume: eos_dynamic
+      cyan_strength: eos_dynamic
+      magenta_volume: eos_dynamic
+      magenta_strength: eos_dynamic
+      yellow_volume: eos_dynamic
+      yellow_strength: eos_dynamic
+      black_volume: eos_dynamic
+      black_strength: eos_dynamic
+
+      mixing_time: eos_dynamic
+      mixing_speed: eos_dynamic
+    dependencies: [retrieve_container]
+
+  - id: move_container_to_analyzer
+    type: Move Container
+    description: Move the container to the color analyzer
+    devices:
+      - lab_id: color_lab
+        id: robot_arm
+      - lab_id: color_lab
+        id: {{ color_mixer }}
+    containers:
+      beaker: mix_colors.beaker
+    parameters:
+      target_location: {{ color_mixer }}
+    dependencies: [mix_colors]
+
+  - id: analyze_color
+    type: Analyze Color
+    description: Analyze the color of the solution in the container and output the RGB values
+    devices:
+      - lab_id: color_lab
+        id: {{ color_analyzer }}
+    containers:
+      beaker: move_container_to_analyzer.beaker
+    dependencies: [move_container_to_analyzer]
+
+  - id: score_color
+    type: Score Color
+    description: Score the color based on the RGB values
+    parameters:
+      red: analyze_color.red
+      green: analyze_color.green
+      blue: analyze_color.blue
+      total_color_volume: mix_colors.total_color_volume
+      max_total_color_volume: 300.0 # based on container capacity
+      target_color: {{ target_color }}
+    dependencies: [analyze_color]
+
+  - id: empty_container
+    type: Empty Container
+    description: Empty the container and move it to the cleaning station
+    devices:
+      - lab_id: color_lab
+        id: robot_arm
+      - lab_id: color_lab
+        id: cleaning_station
+    containers:
+      beaker: analyze_color.beaker
+    parameters:
+      emptying_location: emptying_location
+      target_location: cleaning_station
+    dependencies: [analyze_color]
+
+  - id: clean_container
+    type: Clean Container
+    description: Clean the container by rinsing it with distilled water
+    devices:
+      - lab_id: color_lab
+        id: cleaning_station
+    containers:
+      beaker: empty_container.beaker
+    parameters:
+      duration: 2
+    dependencies: [empty_container]
+
+  - id: store_container
+    type: Store Container
+    description: Store the container back in the container storage
+    devices:
+      - lab_id: color_lab
+        id: robot_arm
+    containers:
+      beaker: clean_container.beaker
+    parameters:
+      storage_location: container_storage
+    dependencies: [clean_container]

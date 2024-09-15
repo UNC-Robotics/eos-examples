@@ -1,0 +1,23 @@
+type: Analyze Color
+description: Analyze the color of a solution
+
+device_types:
+  - color_analyzer
+
+input_containers:
+  beaker:
+    type: beaker
+
+output_parameters:
+  red:
+    type: integer
+    unit: n/a
+    description: The red component of the color
+  green:
+    type: integer
+    unit: n/a
+    description: The green component of the color
+  blue:
+    type: integer
+    unit: n/a
+    description: The blue component of the color
