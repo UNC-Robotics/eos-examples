@@ -4,7 +4,7 @@ from eos.tasks.base_task import BaseTask
 
 
 class ScoreColorTask(BaseTask):
-    def _execute(
+    async def _execute(
         self,
         devices: BaseTask.DevicesType,
         parameters: BaseTask.ParametersType,
