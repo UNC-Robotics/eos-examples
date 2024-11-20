@@ -1,5 +1,5 @@
 type: Analyze Color
-description: Analyze the color of a solution
+desc: Analyze the color of a solution
 
 device_types:
   - color_analyzer
@@ -10,14 +10,14 @@ input_containers:
 
 output_parameters:
   red:
-    type: integer
+    type: int
     unit: n/a
-    description: The red component of the color
+    desc: The red component of the color
   green:
-    type: integer
+    type: int
     unit: n/a
-    description: The green component of the color
+    desc: The green component of the color
   blue:
-    type: integer
+    type: int
     unit: n/a
-    description: The blue component of the color
+    desc: The blue component of the color

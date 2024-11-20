@@ -3,7 +3,7 @@ import math
 from eos.tasks.base_task import BaseTask
 
 
-class ScoreColorTask(BaseTask):
+class ScoreColor(BaseTask):
     async def _execute(
         self,
         devices: BaseTask.DevicesType,

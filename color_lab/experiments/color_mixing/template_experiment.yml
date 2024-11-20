@@ -1,5 +1,5 @@
 type: {{ experiment_type }}
-description: Experiment to find optimal parameters to synthesize a desired color
+desc: Experiment to find optimal parameters to synthesize a desired color
 
 labs:
   - color_lab
@@ -7,7 +7,7 @@ labs:
 tasks:
   - id: retrieve_container
     type: Retrieve Container
-    description: Get a container from storage and move it to the color dispenser
+    desc: Get a container from storage and move it to the color dispenser
     devices:
       - lab_id: color_lab
         id: robot_arm
@@ -18,8 +18,8 @@ tasks:
     dependencies: []
 
   - id: mix_colors
-    type: Color Mixing
-    description: Mix the colors in the container
+    type: Mix Colors
+    desc: Mix the colors in the container
     devices:
       - lab_id: color_lab
         id: {{ color_mixer }}
@@ -41,7 +41,7 @@ tasks:
 
   - id: move_container_to_analyzer
     type: Move Container
-    description: Move the container to the color analyzer
+    desc: Move the container to the color analyzer
     devices:
       - lab_id: color_lab
         id: robot_arm
@@ -55,7 +55,7 @@ tasks:
 
   - id: analyze_color
     type: Analyze Color
-    description: Analyze the color of the solution in the container and output the RGB values
+    desc: Analyze the color of the solution in the container and output the RGB values
     devices:
       - lab_id: color_lab
         id: {{ color_analyzer }}
@@ -65,7 +65,7 @@ tasks:
 
   - id: score_color
     type: Score Color
-    description: Score the color based on the RGB values
+    desc: Score the color based on the RGB values
     parameters:
       red: analyze_color.red
       green: analyze_color.green
@@ -77,7 +77,7 @@ tasks:
 
   - id: empty_container
     type: Empty Container
-    description: Empty the container and move it to the cleaning station
+    desc: Empty the container and move it to the cleaning station
     devices:
       - lab_id: color_lab
         id: robot_arm
@@ -92,7 +92,7 @@ tasks:
 
   - id: clean_container
     type: Clean Container
-    description: Clean the container by rinsing it with distilled water
+    desc: Clean the container by rinsing it with distilled water
     devices:
       - lab_id: color_lab
         id: cleaning_station
@@ -104,7 +104,7 @@ tasks:
 
   - id: store_container
     type: Store Container
-    description: Store the container back in the container storage
+    desc: Store the container back in the container storage
     devices:
       - lab_id: color_lab
         id: robot_arm

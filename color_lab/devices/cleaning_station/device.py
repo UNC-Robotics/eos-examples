@@ -5,9 +5,9 @@ from eos.devices.base_device import BaseDevice
 from user.color_lab.common.device_client import DeviceClient
 
 
-class CleaningStationDevice(BaseDevice):
-    async def _initialize(self, initialization_parameters: Dict[str, Any]) -> None:
-        port = int(initialization_parameters["port"])
+class CleaningStation(BaseDevice):
+    async def _initialize(self, init_parameters: Dict[str, Any]) -> None:
+        port = int(init_parameters["port"])
         self.client = DeviceClient(port)
         self.client.open_connection()
 

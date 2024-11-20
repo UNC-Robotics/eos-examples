@@ -1,5 +1,5 @@
 type: Store Container
-description: Store a container at a container storage
+desc: Store a container at a container storage
 
 device_types:
   - robot_arm
@@ -10,5 +10,5 @@ input_containers:
 
 input_parameters:
   storage_location:
-    type: string
-    description: The location to store the container at
+    type: str
+    desc: The location to store the container at

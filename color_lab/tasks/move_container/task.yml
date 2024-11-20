@@ -1,5 +1,5 @@
 type: Move Container
-description: Move a container from one location to another using a robotic arm
+desc: Move a container from one location to another using a robotic arm
 
 device_types:
   - robot_arm
@@ -10,5 +10,5 @@ input_containers:
 
 input_parameters:
   target_location:
-    type: string
-    description: The location to move the container to
+    type: str
+    desc: The location to move the container to

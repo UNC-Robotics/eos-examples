@@ -40,25 +40,22 @@ experiments:
 1. `cd` into the `eos` directory. 
 2. Run `python3 user/color_lab/device_drivers.py` start the fluid simulation and simulated device drivers.
 3. Follow the EOS README or instructions on the documentation website on how to run EOS.
-4. Submit tasks, experiments, or campaigns through the user interface or the REST API.
+4. Submit tasks, experiments, or campaigns through the REST API.
 
 You can submit a request to run a campaign through the REST API with `curl` as follows:
 ```bash
-curl -X POST http://localhost:8000 \
+curl -X POST http://localhost:8000/api/campaigns/submit \
      -H "Content-Type: application/json" \
      -d '{
   "campaign_id": "mix_colors",
   "experiment_type": "color_mixing_1",
-  "campaign_execution_parameters": {
-    "max_experiments": 150,
-    "max_concurrent_experiments": 1,
-    "do_optimization": true,
-    "optimizer_computer_ip": "127.0.0.1",
-    "dynamic_parameters": {},
-    "resume": false
-  }
+  "max_experiments": 150,
+  "max_concurrent_experiments": 1,
+  "optimize": true,
+  "optimizer_computer_ip": "127.0.0.1",
+  "resume": false
 }'
 ```
 
-> **_NOTE:_** Do not minimize the fluid simulation browser windows while the campaign is running as the simulation may 
-> pause running.
+> **_NOTE:_** Be careful about minimizing the fluid simulation browser windows while a campaign is running as the simulation may 
+> pause.

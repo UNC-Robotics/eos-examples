@@ -168,7 +168,7 @@ class ColorAnalyzerDriver:
 
 
 class RobotArmDriver:
-    async def move(self, from_location: str, to_location: str) -> bool:
+    async def move(self, from_location, to_location) -> bool:
         await asyncio.sleep(1)
         return True
 

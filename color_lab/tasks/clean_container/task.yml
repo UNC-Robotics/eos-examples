@@ -1,5 +1,5 @@
 type: Clean Container
-description: Clean a container by rinsing it
+desc: Clean a container by rinsing it
 
 device_types:
   - cleaning_station
@@ -10,6 +10,6 @@ input_containers:
 
 input_parameters:
   duration:
-    type: integer
+    type: int
     unit: sec
-    description: How long to clean
+    desc: How long to clean

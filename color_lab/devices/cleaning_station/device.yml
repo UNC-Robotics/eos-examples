@@ -1,5 +1,5 @@
 type: cleaning_station
-description: Cleaning for station for rinsing a container
+desc: Cleaning for station for rinsing a container
 
-initialization_parameters:
+init_parameters:
   port: 5001

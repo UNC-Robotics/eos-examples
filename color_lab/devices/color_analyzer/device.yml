@@ -1,5 +1,5 @@
 type: color_analyzer
-description: Analyzes the RGB value of a color mixture
+desc: Analyzes the RGB value of a color mixture
 
-initialization_parameters:
+init_parameters:
   port: 5002
