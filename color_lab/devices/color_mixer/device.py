@@ -48,17 +48,17 @@ class ColorMixer(BaseDevice):
             volume = params[f"{color}_volume"]
             strength = params[f"{color}_strength"]
 
-            container.metadata[f"{color}_volume"] = container.metadata.get(f"{color}_volume", 0) + volume
-            container.metadata[f"{color}_strength"] = strength
+            container.meta[f"{color}_volume"] = container.meta.get(f"{color}_volume", 0) + volume
+            container.meta[f"{color}_strength"] = strength
             total_volume += volume
 
-        if "volume" not in container.metadata:
-            container.metadata["volume"] = 0
-        container.metadata["volume"] += total_volume
-        container.metadata["clean"] = False
-        container.metadata["mixing_time"] = mixing_time
-        container.metadata["mixing_speed"] = mixing_speed
-        container.metadata["clean"] = False
+        if "volume" not in container.meta:
+            container.meta["volume"] = 0
+        container.meta["volume"] += total_volume
+        container.meta["clean"] = False
+        container.meta["mixing_time"] = mixing_time
+        container.meta["mixing_speed"] = mixing_speed
+        container.meta["clean"] = False
 
         self.client.send_command("mix", params)
 

@@ -20,5 +20,5 @@ class CleaningStation(BaseDevice):
     def clean(self, container: Container, duration_sec: int = 1) -> Container:
         result = self.client.send_command("clean", {"duration_sec": duration_sec})
         if result:
-            container.metadata["clean"] = True
+            container.meta["clean"] = True
         return container

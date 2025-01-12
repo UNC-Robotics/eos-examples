@@ -34,5 +34,6 @@ class MixColors(BaseTask):
             mixing_time,
             mixing_speed,
         )
+        containers["beaker"].meta["clean"] = False
 
         return {"total_color_volume": cyan_volume + magenta_volume + yellow_volume + black_volume}, containers, None

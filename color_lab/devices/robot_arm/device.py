@@ -41,6 +41,5 @@ class RobotArm(BaseDevice):
         container = self.move_container(container, emptying_location)
         result = self.client.send_command("empty", {})
         if result:
-            container.metadata["volume"] = 0
-            container.metadata = {}
+            container.meta["volume"] = 0
         return container

@@ -103,7 +103,7 @@ devices:
 containers:
   - type: beaker
     location: container_storage
-    metadata:
+    meta:
       capacity: 300
     ids:
       - c_a
