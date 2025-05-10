@@ -33,7 +33,8 @@ input_parameters:
   target_color:
     type: list
     element_type: int
-    desc: The expected color
+    length: 3
+    desc: The expected RGB color
 
 output_parameters:
   loss:

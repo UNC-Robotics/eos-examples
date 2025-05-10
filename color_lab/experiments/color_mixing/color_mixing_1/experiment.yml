@@ -3,4 +3,4 @@
 {% set color_mixer = 'color_mixer_1' %}
 {% set color_analyzer = 'color_analyzer_1' %}
 {% set target_color = '[53, 29, 64]' %}
-{% include 'color_lab/experiments/color_mixing/template_experiment.yml' %}
+{% include 'eos_examples/color_lab/experiments/color_mixing/template_experiment.yml' %}

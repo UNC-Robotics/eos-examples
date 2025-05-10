@@ -2,7 +2,7 @@ from typing import Dict, Any
 
 from eos.containers.entities.container import Container
 from eos.devices.base_device import BaseDevice
-from user.color_lab.common.device_client import DeviceClient
+from user.eos_examples.color_lab.common.device_client import DeviceClient
 
 
 class CleaningStation(BaseDevice):

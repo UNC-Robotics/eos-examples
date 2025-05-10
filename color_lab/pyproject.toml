@@ -1,0 +1,10 @@
+[project]
+name = "color_lab"
+version = "1.0.0"
+description = "Example EOS package for color mixing"
+readme = "README.md"
+dependencies = [
+    "pymixbox",
+    "websockets",
+    "eos"
+]

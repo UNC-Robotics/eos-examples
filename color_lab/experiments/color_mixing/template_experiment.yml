@@ -34,7 +34,6 @@ tasks:
       yellow_strength: eos_dynamic
       black_volume: eos_dynamic
       black_strength: eos_dynamic
-
       mixing_time: eos_dynamic
       mixing_speed: eos_dynamic
     dependencies: [retrieve_container]
@@ -71,7 +70,7 @@ tasks:
       green: analyze_color.green
       blue: analyze_color.blue
       total_color_volume: mix_colors.total_color_volume
-      max_total_color_volume: 300.0 # based on container capacity
+      max_total_color_volume: 300.0
       target_color: {{ target_color }}
     dependencies: [analyze_color]
 
