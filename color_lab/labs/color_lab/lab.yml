@@ -1,37 +1,10 @@
-type: color_lab
+name: color_lab
 desc: A laboratory for color analysis and mixing
 
-locations:
-  color_experiment_benchtop:
-    desc: Benchtop for color experiments
-  container_storage:
-    desc: Storage unit for containers
-  color_mixer_1:
-    desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
-  color_mixer_2:
-    desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
-  color_mixer_3:
-    desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
-  color_analyzer_1:
-    desc: Analyzer for color solutions
-  color_analyzer_2:
-    desc: Analyzer for color solutions
-  color_analyzer_3:
-    desc: Analyzer for color solutions
-  cleaning_station:
-    desc: Station for cleaning containers
-
 devices:
-  cleaning_station:
-    desc: Station for cleaning containers
-    type: cleaning_station
-    location: cleaning_station
-    computer: eos_computer
-
   robot_arm:
     desc: Robotic arm for moving containers
     type: robot_arm
-    location: color_experiment_benchtop
     computer: eos_computer
 
     init_parameters:
@@ -46,68 +19,104 @@ devices:
         - cleaning_station
         - emptying_location
 
+  cleaning_station:
+    desc: Station for cleaning containers
+    type: cleaning_station
+    computer: eos_computer
+
+    meta:
+      location: cleaning_station
+
   color_mixer_1:
     desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
     type: color_mixer
-    location: color_mixer_1
     computer: eos_computer
 
     init_parameters:
       port: 5004
 
+    meta:
+      location: color_mixer_1
+
   color_mixer_2:
     desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
     type: color_mixer
-    location: color_mixer_2
     computer: eos_computer
 
     init_parameters:
       port: 5006
 
+    meta:
+      location: color_mixer_2
+
   color_mixer_3:
     desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
     type: color_mixer
-    location: color_mixer_3
     computer: eos_computer
 
     init_parameters:
       port: 5008
 
+    meta:
+      location: color_mixer_3
+
   color_analyzer_1:
     desc: Analyzer for color solutions
     type: color_analyzer
-    location: color_analyzer_1
     computer: eos_computer
 
     init_parameters:
       port: 5003
 
+    meta:
+      location: color_analyzer_1
+
   color_analyzer_2:
     desc: Analyzer for color solutions
     type: color_analyzer
-    location: color_analyzer_2
     computer: eos_computer
 
     init_parameters:
       port: 5005
 
+    meta:
+      location: color_analyzer_2
+
   color_analyzer_3:
     desc: Analyzer for color solutions
     type: color_analyzer
-    location: color_analyzer_3
     computer: eos_computer
 
     init_parameters:
       port: 5007
 
-containers:
-  - type: beaker
-    location: container_storage
+    meta:
+      location: color_analyzer_3
+
+
+resource_types:
+  beaker:
     meta:
       capacity: 300
-    ids:
-      - c_a
-      - c_b
-      - c_c
-      - c_d
-      - c_e
+
+resources:
+  c_a:
+    type: beaker
+    meta:
+      location: container_storage
+  c_b:
+    type: beaker
+    meta:
+      location: container_storage
+  c_c:
+    type: beaker
+    meta:
+      location: container_storage
+  c_d:
+    type: beaker
+    meta:
+      location: container_storage
+  c_e:
+    type: beaker
+    meta:
+      location: container_storage

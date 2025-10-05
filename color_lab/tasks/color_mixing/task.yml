@@ -1,10 +1,11 @@
 type: Mix Colors
 desc: Incrementally dispense and mix colors in a beaker
 
-device_types:
-  - color_mixer
+devices:
+  color_mixer:
+    type: color_mixer
 
-input_containers:
+input_resources:
   beaker:
     type: beaker
 

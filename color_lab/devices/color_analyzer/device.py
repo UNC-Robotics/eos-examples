@@ -1,6 +1,6 @@
 from typing import Any
 
-from eos.containers.entities.container import Container
+from eos.resources.entities.resource import Resource
 from eos.devices.base_device import BaseDevice
 from user.eos_examples.color_lab.common.device_client import DeviceClient
 
@@ -17,6 +17,6 @@ class ColorAnalyzer(BaseDevice):
     async def _report(self) -> dict[str, Any]:
         return {}
 
-    def analyze(self, container: Container) -> tuple[Container, tuple[int, int, int]]:
+    def analyze(self, container: Resource) -> tuple[Resource, tuple[int, int, int]]:
         rgb = self.client.send_command("analyze", {})
         return container, rgb

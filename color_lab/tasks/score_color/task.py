@@ -8,7 +8,7 @@ class ScoreColor(BaseTask):
         self,
         devices: BaseTask.DevicesType,
         parameters: BaseTask.ParametersType,
-        containers: BaseTask.ContainersType,
+        resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
         red = parameters["red"]
         green = parameters["green"]

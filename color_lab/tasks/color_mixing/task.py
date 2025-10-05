@@ -6,9 +6,9 @@ class MixColors(BaseTask):
         self,
         devices: BaseTask.DevicesType,
         parameters: BaseTask.ParametersType,
-        containers: BaseTask.ContainersType,
+        resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
-        mixer = devices.get_all_by_type("color_mixer")[0]
+        mixer = devices["color_mixer"]
 
         cyan_volume = parameters["cyan_volume"]
         cyan_strength = parameters["cyan_strength"]
@@ -21,8 +21,8 @@ class MixColors(BaseTask):
         mixing_time = parameters["mixing_time"]
         mixing_speed = parameters["mixing_speed"]
 
-        containers["beaker"] = mixer.mix(
-            containers["beaker"],
+        resources["beaker"] = mixer.mix(
+            resources["beaker"],
             cyan_volume,
             cyan_strength,
             magenta_volume,
@@ -34,6 +34,6 @@ class MixColors(BaseTask):
             mixing_time,
             mixing_speed,
         )
-        containers["beaker"].meta["clean"] = False
+        resources["beaker"].meta["clean"] = False
 
-        return {"total_color_volume": cyan_volume + magenta_volume + yellow_volume + black_volume}, containers, None
+        return {"total_color_volume": cyan_volume + magenta_volume + yellow_volume + black_volume}, resources, None

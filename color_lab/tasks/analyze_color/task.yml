@@ -1,10 +1,11 @@
 type: Analyze Color
 desc: Analyze the color of a solution
 
-device_types:
-  - color_analyzer
+devices:
+  color_analyzer:
+    type: color_analyzer
 
-input_containers:
+input_resources:
   beaker:
     type: beaker
 

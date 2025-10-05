@@ -1,6 +1,0 @@
-{% set experiment_type = 'color_mixing_2' %}
-{% set container = 'c_b' %}
-{% set color_mixer = 'color_mixer_2' %}
-{% set color_analyzer = 'color_analyzer_2' %}
-{% set target_color = '[11, 25, 82]' %}
-{% include 'eos_examples/color_lab/experiments/color_mixing/template_experiment.yml' %}

@@ -1,6 +1,6 @@
 from typing import Dict, Any
 
-from eos.containers.entities.container import Container
+from eos.resources.entities.resource import Resource
 from eos.devices.base_device import BaseDevice
 from user.eos_examples.color_lab.common.device_client import DeviceClient
 
@@ -17,7 +17,7 @@ class CleaningStation(BaseDevice):
     async def _report(self) -> Dict[str, Any]:
         return {}
 
-    def clean(self, container: Container, duration_sec: int = 1) -> Container:
+    def clean(self, container: Resource, duration_sec: int = 1) -> Resource:
         result = self.client.send_command("clean", {"duration_sec": duration_sec})
         if result:
             container.meta["clean"] = True

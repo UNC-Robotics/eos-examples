@@ -1,10 +1,11 @@
 type: Store Container
 desc: Store a container at a container storage
 
-device_types:
-  - robot_arm
+devices:
+  robot_arm:
+    type: robot_arm
 
-input_containers:
+input_resources:
   beaker:
     type: beaker
 

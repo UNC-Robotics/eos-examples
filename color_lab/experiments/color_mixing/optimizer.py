@@ -26,7 +26,7 @@ def eos_create_campaign_optimizer() -> tuple[dict, type[AbstractSequentialOptimi
         ],
         "constraints": [],
         "acquisition_function": qUCB(beta=1),
-        "num_initial_samples": 50,
+        "num_initial_samples": 25,
         "initial_sampling_method": SamplingMethodEnum.SOBOL,
     }
 

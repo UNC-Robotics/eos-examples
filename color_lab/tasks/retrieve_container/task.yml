@@ -1,18 +1,16 @@
 type: Retrieve Container
 desc: Retrieve a container from a container storage unit using a robotic arm
 
-device_types:
-  - robot_arm
+devices:
+  robot_arm:
+    type: robot_arm
+  color_mixer:
+    type: color_mixer
 
-input_containers:
+input_resources:
   beaker:
     type: beaker
 
-input_parameters:
-  target_location:
-    type: str
-    desc: The location to move the container to
-
-output_containers:
+output_resources:
   beaker:
     type: beaker

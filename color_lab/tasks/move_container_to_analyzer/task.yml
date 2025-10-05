@@ -1,0 +1,14 @@
+type: Move Container to Analyzer
+desc: Move a container to the color analyzer using a robotic arm
+
+devices:
+  robot_arm:
+    type: robot_arm
+  color_mixer:
+    type: color_mixer
+  color_analyzer:
+    type: color_analyzer
+
+input_resources:
+  beaker:
+    type: beaker

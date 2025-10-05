@@ -6,11 +6,11 @@ class CleanContainer(BaseTask):
         self,
         devices: BaseTask.DevicesType,
         parameters: BaseTask.ParametersType,
-        containers: BaseTask.ContainersType,
+        resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
-        cleaning_station = devices.get_all_by_type("cleaning_station")[0]
+        cleaning_station = devices["cleaning_station"]
         duration = parameters["duration"]
 
-        containers["beaker"] = cleaning_station.clean(containers["beaker"], duration_sec=duration)
+        resources["beaker"] = cleaning_station.clean(resources["beaker"], duration_sec=duration)
 
-        return None, containers, None
+        return None, resources, None

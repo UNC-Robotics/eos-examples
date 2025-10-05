@@ -1,10 +1,11 @@
 type: Clean Container
 desc: Clean a container by rinsing it
 
-device_types:
-  - cleaning_station
+devices:
+  cleaning_station:
+    type: cleaning_station
 
-input_containers:
+input_resources:
   beaker:
     type: beaker
 

@@ -6,14 +6,15 @@ class EmptyContainerTask(BaseTask):
         self,
         devices: BaseTask.DevicesType,
         parameters: BaseTask.ParametersType,
-        containers: BaseTask.ContainersType,
+        resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
-        robot_arm = devices.get_all_by_type("robot_arm")[0]
+        robot_arm = devices["robot_arm"]
+        cleaning_station = devices["cleaning_station"]
 
         emptying_location = parameters["emptying_location"]
-        target_location = parameters["target_location"]
+        target_location = cleaning_station.meta["location"]
 
-        containers["beaker"] = robot_arm.empty_container(containers["beaker"], emptying_location)
-        containers["beaker"] = robot_arm.move_container(containers["beaker"], target_location)
+        resources["beaker"] = robot_arm.empty_container(resources["beaker"], emptying_location)
+        resources["beaker"] = robot_arm.move_container(resources["beaker"], target_location)
 
-        return None, containers, None
+        return None, resources, None

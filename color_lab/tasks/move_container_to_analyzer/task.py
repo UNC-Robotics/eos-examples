@@ -1,7 +1,7 @@
 from eos.tasks.base_task import BaseTask
 
 
-class StoreContainer(BaseTask):
+class MoveContainerToAnalyzer(BaseTask):
     async def _execute(
         self,
         devices: BaseTask.DevicesType,
@@ -9,11 +9,10 @@ class StoreContainer(BaseTask):
         resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
         robot_arm = devices["robot_arm"]
-        storage_location = parameters["storage_location"]
+        color_analyzer = devices["color_analyzer"]
 
-        beaker = robot_arm.move_container(resources["beaker"], storage_location)
+        target_location = color_analyzer.meta["location"]
 
-        beaker.meta = {"volume": 0, "clean": True, "location": storage_location}
-        resources["beaker"] = beaker
+        resources["beaker"] = robot_arm.move_container(resources["beaker"], target_location)
 
         return None, resources, None

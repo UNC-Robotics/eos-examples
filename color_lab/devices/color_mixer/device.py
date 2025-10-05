@@ -1,6 +1,6 @@
 from typing import Dict, Any
 
-from eos.containers.entities.container import Container
+from eos.resources.entities.resource import Resource
 from eos.devices.base_device import BaseDevice
 from user.eos_examples.color_lab.common.device_client import DeviceClient
 
@@ -19,7 +19,7 @@ class ColorMixer(BaseDevice):
 
     def mix(
         self,
-        container: Container,
+        container: Resource,
         cyan_volume: float,
         cyan_strength: float,
         magenta_volume: float,
@@ -30,7 +30,7 @@ class ColorMixer(BaseDevice):
         black_strength: float,
         mixing_time: int,
         mixing_speed: int,
-    ) -> Container:
+    ) -> Resource:
         params = {
             "cyan_volume": cyan_volume,
             "cyan_strength": cyan_strength,
