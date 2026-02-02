@@ -4,8 +4,8 @@ desc: Retrieve a container from a container storage unit using a robotic arm
 devices:
   robot_arm:
     type: robot_arm
-  color_mixer:
-    type: color_mixer
+  color_station:
+    type: color_station
 
 input_resources:
   beaker:

@@ -1,5 +1,0 @@
-type: color_mixer
-desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
-
-init_parameters:
-  port: 5003

@@ -8,9 +8,9 @@ class AnalyzeColor(BaseTask):
         parameters: BaseTask.ParametersType,
         resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
-        color_analyzer = devices["color_analyzer"]
+        color_station = devices["color_station"]
 
-        resources["beaker"], rgb = color_analyzer.analyze(resources["beaker"])
+        resources["beaker"], rgb = color_station.analyze(resources["beaker"])
 
         output_parameters = {
             "red": rgb[0],

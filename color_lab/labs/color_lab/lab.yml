@@ -10,12 +10,9 @@ devices:
     init_parameters:
       locations:
         - container_storage
-        - color_mixer_1
-        - color_mixer_2
-        - color_mixer_3
-        - color_analyzer_1
-        - color_analyzer_2
-        - color_analyzer_3
+        - color_station_1
+        - color_station_2
+        - color_station_3
         - cleaning_station
         - emptying_location
 
@@ -27,72 +24,38 @@ devices:
     meta:
       location: cleaning_station
 
-  color_mixer_1:
-    desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
-    type: color_mixer
-    computer: eos_computer
-
-    init_parameters:
-      port: 5004
-
-    meta:
-      location: color_mixer_1
-
-  color_mixer_2:
-    desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
-    type: color_mixer
-    computer: eos_computer
-
-    init_parameters:
-      port: 5006
-
-    meta:
-      location: color_mixer_2
-
-  color_mixer_3:
-    desc: Color mixing apparatus for incrementally dispensing and mixing color solutions
-    type: color_mixer
-    computer: eos_computer
-
-    init_parameters:
-      port: 5008
-
-    meta:
-      location: color_mixer_3
-
-  color_analyzer_1:
-    desc: Analyzer for color solutions
-    type: color_analyzer
+  color_station_1:
+    desc: Color mixing and analysis station backed by a fluid simulation
+    type: color_station
     computer: eos_computer
 
     init_parameters:
       port: 5003
 
     meta:
-      location: color_analyzer_1
+      location: color_station_1
 
-  color_analyzer_2:
-    desc: Analyzer for color solutions
-    type: color_analyzer
+  color_station_2:
+    desc: Color mixing and analysis station backed by a fluid simulation
+    type: color_station
+    computer: eos_computer
+
+    init_parameters:
+      port: 5004
+
+    meta:
+      location: color_station_2
+
+  color_station_3:
+    desc: Color mixing and analysis station backed by a fluid simulation
+    type: color_station
     computer: eos_computer
 
     init_parameters:
       port: 5005
 
     meta:
-      location: color_analyzer_2
-
-  color_analyzer_3:
-    desc: Analyzer for color solutions
-    type: color_analyzer
-    computer: eos_computer
-
-    init_parameters:
-      port: 5007
-
-    meta:
-      location: color_analyzer_3
-
+      location: color_station_3
 
 resource_types:
   beaker:

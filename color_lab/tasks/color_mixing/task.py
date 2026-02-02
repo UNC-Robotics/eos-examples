@@ -8,7 +8,7 @@ class MixColors(BaseTask):
         parameters: BaseTask.ParametersType,
         resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
-        mixer = devices["color_mixer"]
+        mixer = devices["color_station"]
 
         cyan_volume = parameters["cyan_volume"]
         cyan_strength = parameters["cyan_strength"]

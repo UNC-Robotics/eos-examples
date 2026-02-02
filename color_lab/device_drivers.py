@@ -1,8 +1,13 @@
 import asyncio
 import json
-import webbrowser
+import os
+import platform
+import subprocess
 import argparse
+import webbrowser
 from typing import Any, TypedDict, cast
+
+IS_WINDOWS = platform.system() == "Windows"
 
 import websockets
 from aiohttp import web
@@ -26,6 +31,7 @@ class FluidSimulationServer:
         self.message_queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
         self.average_color: ColorData | None = None
         self.average_color_event = asyncio.Event()
+        self.config_update_event = asyncio.Event()
         self.websocket_server = None
 
     async def handle_client(self, websocket) -> None:
@@ -50,6 +56,8 @@ class FluidSimulationServer:
                 if data["type"] == "averageColor":
                     self.average_color = cast(ColorData, data["color"])
                     self.average_color_event.set()
+                elif data["type"] == "configUpdated":
+                    self.config_update_event.set()
                 else:
                     print(f"Received unknown message type: {data['type']}")
         except websockets.exceptions.ConnectionClosed:
@@ -87,10 +95,18 @@ class FluidSimulationApi:
         """Initialize the API with a server instance."""
         self.server = server
 
-    async def update_config(self, key: str, value: Any) -> None:
+    async def update_config(self, key: str, value: Any) -> bool:
         """Update a configuration parameter in the simulation."""
         message = {"type": "updateConfig", "key": key, "value": value}
         await self.server.send_message(message)
+        try:
+            await asyncio.wait_for(self.server.config_update_event.wait(), timeout=5.0)
+            return True
+        except asyncio.TimeoutError:
+            print(f"Timeout waiting for config update acknowledgment for {key}")
+            return False
+        finally:
+            self.server.config_update_event.clear()
 
     async def clear_screen(self) -> None:
         """Clear the simulation display."""
@@ -138,11 +154,12 @@ class CleaningStationDriver(BaseDeviceDriver):
         return True
 
 
-class ColorMixerDriver:
-    """Driver for the color mixer device."""
+class ColorStationDriver(BaseDeviceDriver):
+    """Driver for the color station device (mixing and analysis)."""
 
-    def __init__(self, fluid_sim_api: FluidSimulationApi):
+    def __init__(self, fluid_sim_api: FluidSimulationApi, enable_sleeping: bool = True):
         """Initialize the driver with a fluid simulation API."""
+        super().__init__(enable_sleeping)
         self.fluid_sim_api = fluid_sim_api
 
     async def mix(
@@ -201,15 +218,6 @@ class ColorMixerDriver:
         await asyncio.sleep(2)
 
         return True
-
-
-class ColorAnalyzerDriver(BaseDeviceDriver):
-    """Driver for the color analyzer device."""
-
-    def __init__(self, fluid_sim_api: FluidSimulationApi, enable_sleeping: bool = True):
-        """Initialize the driver."""
-        super().__init__(enable_sleeping)
-        self.fluid_sim_api = fluid_sim_api
 
     async def analyze(self) -> tuple[int, int, int]:
         """Analyze the current color in the simulation."""
@@ -295,6 +303,8 @@ class FluidSimulationManager:
         self,
         num_instances: int,
         enable_sleeping: bool = True,
+        browser: str = "default",
+        nvidia: bool = False,
         base_websocket_port: int = 8030,
         base_web_port: int = 9050,
     ):
@@ -303,6 +313,8 @@ class FluidSimulationManager:
         self.base_websocket_port = base_websocket_port
         self.base_web_port = base_web_port
         self.enable_sleeping = enable_sleeping
+        self.browser = browser
+        self.nvidia = nvidia
         self.fluid_servers: list[FluidSimulationServer] = []
         self.fluid_apis: list[FluidSimulationApi] = []
         self.web_runners: list[web.AppRunner] = []
@@ -333,14 +345,35 @@ class FluidSimulationManager:
         print(f"Fluid simulation web server started on http://localhost:{web_port}")
         self.web_runners.append(runner)
 
-        webbrowser.open(new=1, url=f"http://localhost:{web_port}/Fluid Simulation.html?port={websocket_port}")
+        url = f"http://localhost:{web_port}/Fluid Simulation.html?port={websocket_port}"
+
+        if self.browser == "default":
+            webbrowser.open(url)
+        else:
+            env = os.environ.copy()
+            if self.nvidia and not IS_WINDOWS:
+                env["DRI_PRIME"] = "1"
+                env["__NV_PRIME_RENDER_OFFLOAD"] = "1"
+                env["__GLX_VENDOR_LIBRARY_NAME"] = "nvidia"
+
+            if self.browser == "chrome":
+                if IS_WINDOWS:
+                    cmd = ["chrome", "--incognito", "--new-window", url]
+                else:
+                    cmd = ["google-chrome", "--incognito", "--new-window", "--ozone-platform=x11", url]
+                subprocess.Popen(cmd, env=env)
+            elif self.browser == "edge":
+                if IS_WINDOWS:
+                    cmd = ["msedge", "--inprivate", "--new-window", url]
+                else:
+                    cmd = ["microsoft-edge", "--inprivate", "--new-window", "--ozone-platform=x11", url]
+                subprocess.Popen(cmd, env=env)
 
     def get_simulation_devices(self) -> dict[str, tuple[Any, int]]:
         """Get all simulation device drivers with their ports."""
         devices = {}
         for i, api in enumerate(self.fluid_apis):
-            devices[f"color_analyzer_{i+1}"] = (ColorAnalyzerDriver(api, self.enable_sleeping), 5003 + i * 2)
-            devices[f"color_mixer_{i+1}"] = (ColorMixerDriver(api), 5004 + i * 2)
+            devices[f"color_station_{i+1}"] = (ColorStationDriver(api, self.enable_sleeping), 5003 + i)
         return devices
 
     async def cleanup(self) -> None:
@@ -354,6 +387,17 @@ async def main() -> None:
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Fluid Simulation Server")
     parser.add_argument("--enable-sleeping", action="store_true", help="Enable sleeps in the simulation.")
+    parser.add_argument(
+        "--browser",
+        choices=["default", "chrome", "edge"],
+        default="default",
+        help="Browser to use. 'default' uses system browser.",
+    )
+    parser.add_argument(
+        "--nvidia",
+        action="store_true",
+        help="(Linux only) Enable NVIDIA GPU offload for dual-GPU systems.",
+    )
     args = parser.parse_args()
 
     enable_sleeping = args.enable_sleeping
@@ -361,7 +405,9 @@ async def main() -> None:
 
     # Initialize fluid simulation manager
     fluid_sim_instances = 3
-    fluid_sim_manager = FluidSimulationManager(fluid_sim_instances, enable_sleeping)
+    fluid_sim_manager = FluidSimulationManager(
+        fluid_sim_instances, enable_sleeping, browser=args.browser, nvidia=args.nvidia
+    )
     await fluid_sim_manager.initialize_instances()
 
     # Set up all device drivers

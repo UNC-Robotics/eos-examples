@@ -44,4 +44,7 @@ class RobotArm(BaseDevice):
         result = self.client.send_command("empty", {})
         if result:
             container.meta["volume"] = 0
+            for color in ["cyan", "magenta", "yellow", "black"]:
+                container.meta.pop(f"{color}_volume", None)
+                container.meta.pop(f"{color}_strength", None)
         return container

@@ -2,8 +2,8 @@ type: Mix Colors
 desc: Incrementally dispense and mix colors in a beaker
 
 devices:
-  color_mixer:
-    type: color_mixer
+  color_station:
+    type: color_station
 
 input_resources:
   beaker:

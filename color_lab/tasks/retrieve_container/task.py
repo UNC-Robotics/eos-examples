@@ -9,9 +9,9 @@ class RetrieveContainer(BaseTask):
         resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
         robot_arm = devices["robot_arm"]
-        color_mixer = devices["color_mixer"]
+        color_station = devices["color_station"]
 
-        target_location = color_mixer.meta["location"]
+        target_location = color_station.meta["location"]
 
         resources["beaker"] = robot_arm.move_container(resources["beaker"], target_location)
 

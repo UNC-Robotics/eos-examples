@@ -77,7 +77,8 @@ if (!ext.supportLinearFiltering) {
 startGUI();
 
 function getWebGLContext(canvas) {
-    const params = { alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false };
+    // preserveDrawingBuffer: true is required for capturing canvas content via 2D canvas drawImage
+    const params = { alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: true };
 
     let gl = canvas.getContext("webgl2", params);
     const isWebGL2 = !!gl;
@@ -110,12 +111,20 @@ function getWebGLContext(canvas) {
         formatR = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
     }
 
+    // RGBA8 format for pixel readback (compatible with gl.readPixels using UNSIGNED_BYTE)
+    const formatRGBA8 = {
+        internalFormat: isWebGL2 ? gl.RGBA8 : gl.RGBA,
+        format: gl.RGBA,
+        type: gl.UNSIGNED_BYTE,
+    };
+
     return {
         gl,
         ext: {
             formatRGBA,
             formatRG,
             formatR,
+            formatRGBA8,
             halfFloatTexType,
             supportLinearFiltering,
         },
@@ -189,91 +198,82 @@ function startGUI() {
 }
 
 function captureScreenshot() {
-    let res = getResolution(config.CAPTURE_RESOLUTION);
-    let target = createFBO(
-        res.width,
-        res.height,
-        ext.formatRGBA.internalFormat,
-        ext.formatRGBA.format,
-        ext.halfFloatTexType,
-        gl.NEAREST
-    );
-    render(target);
+    // Use 2D canvas method for cross-browser compatibility
+    let captureCanvas = document.createElement("canvas");
+    let captureSize = config.CAPTURE_RESOLUTION;
+    captureCanvas.width = captureSize;
+    captureCanvas.height = captureSize;
+    let ctx = captureCanvas.getContext("2d");
+    ctx.drawImage(canvas, 0, 0, captureSize, captureSize);
 
-    let texture = framebufferToTexture(target);
-    texture = normalizeTexture(texture, target.width, target.height);
-
-    let captureCanvas = textureToCanvas(texture, target.width, target.height);
     let datauri = captureCanvas.toDataURL();
     downloadURI("fluid.png", datauri);
     URL.revokeObjectURL(datauri);
 }
 
 function computeAverageColor() {
-    let res = getResolution(config.CAPTURE_RESOLUTION);
-    let target = createFBO(
-        res.width,
-        res.height,
-        ext.formatRGBA.internalFormat,
-        ext.formatRGBA.format,
-        ext.halfFloatTexType,
-        gl.NEAREST
-    );
-    render(target);
+    // Use 2D canvas method for cross-browser compatibility (works reliably in Edge, Chrome, Firefox, Safari)
+    // This avoids WebGL readPixels format/type issues with floating-point framebuffers
 
-    let texture = framebufferToTexture(target);
+    // Create a temporary 2D canvas to capture the WebGL canvas content
+    let captureCanvas = document.createElement("canvas");
+    let captureSize = config.CAPTURE_RESOLUTION;
+    captureCanvas.width = captureSize;
+    captureCanvas.height = captureSize;
+    let ctx = captureCanvas.getContext("2d");
+
+    // Draw the WebGL canvas onto the 2D canvas (this handles all format conversion automatically)
+    ctx.drawImage(canvas, 0, 0, captureSize, captureSize);
+
+    // Get pixel data from the 2D canvas (always returns RGBA as Uint8ClampedArray)
+    let imageData = ctx.getImageData(0, 0, captureSize, captureSize);
+    let pixels = imageData.data;
 
     let totalR = 0,
         totalG = 0,
         totalB = 0;
-    let pixelCount = texture.length / 4; // Divide by 4 because each pixel has RGBA values
+    let pixelCount = pixels.length / 4;
 
-    for (let i = 0; i < texture.length; i += 4) {
-        totalR += texture[i];
-        totalG += texture[i + 1];
-        totalB += texture[i + 2];
+    for (let i = 0; i < pixels.length; i += 4) {
+        totalR += pixels[i];
+        totalG += pixels[i + 1];
+        totalB += pixels[i + 2];
     }
 
     let avgR = totalR / pixelCount;
     let avgG = totalG / pixelCount;
     let avgB = totalB / pixelCount;
 
-    // Clean up
-    gl.deleteFramebuffer(target.fbo);
-    gl.deleteTexture(target.texture);
-
     return {
-        r: Math.round(avgR * 255),
-        g: Math.round(avgG * 255),
-        b: Math.round(avgB * 255),
+        r: Math.round(avgR),
+        g: Math.round(avgG),
+        b: Math.round(avgB),
     };
 }
 
 function computeColorVariance() {
-    let res = getResolution(config.CAPTURE_RESOLUTION);
-    let target = createFBO(
-        res.width,
-        res.height,
-        ext.formatRGBA.internalFormat,
-        ext.formatRGBA.format,
-        ext.halfFloatTexType,
-        gl.NEAREST
-    );
-    render(target);
+    // Use 2D canvas method for cross-browser compatibility
+    let captureCanvas = document.createElement("canvas");
+    let captureSize = config.CAPTURE_RESOLUTION;
+    captureCanvas.width = captureSize;
+    captureCanvas.height = captureSize;
+    let ctx = captureCanvas.getContext("2d");
+    ctx.drawImage(canvas, 0, 0, captureSize, captureSize);
 
-    let texture = framebufferToTexture(target);
+    let imageData = ctx.getImageData(0, 0, captureSize, captureSize);
+    let pixels = imageData.data;
 
     let sumR = 0, sumG = 0, sumB = 0;
     let sumR2 = 0, sumG2 = 0, sumB2 = 0;
-    let pixelCount = texture.length / 4;
+    let pixelCount = pixels.length / 4;
 
-    for (let i = 0; i < texture.length; i += 4) {
-        sumR += texture[i];
-        sumG += texture[i + 1];
-        sumB += texture[i + 2];
-        sumR2 += texture[i] * texture[i];
-        sumG2 += texture[i + 1] * texture[i + 1];
-        sumB2 += texture[i + 2] * texture[i + 2];
+    for (let i = 0; i < pixels.length; i += 4) {
+        sumR += pixels[i];
+        sumG += pixels[i + 1];
+        sumB += pixels[i + 2];
+        sumR2 += pixels[i] * pixels[i];
+        sumG2 += pixels[i + 1] * pixels[i + 1];
+        sumB2 += pixels[i + 2] * pixels[i + 2];
     }
 
     let meanR = sumR / pixelCount;
@@ -284,42 +284,36 @@ function computeColorVariance() {
     let varianceG = (sumG2 / pixelCount) - (meanG * meanG);
     let varianceB = (sumB2 / pixelCount) - (meanB * meanB);
 
-    // Clean up
-    gl.deleteFramebuffer(target.fbo);
-    gl.deleteTexture(target.texture);
-
     return {
-        r: Math.round(varianceR * 255 * 255),
-        g: Math.round(varianceG * 255 * 255),
-        b: Math.round(varianceB * 255 * 255)
+        r: Math.round(varianceR),
+        g: Math.round(varianceG),
+        b: Math.round(varianceB)
     };
 }
 
 function computeColorStandardDeviation() {
-    let res = getResolution(config.CAPTURE_RESOLUTION);
-    let target = createFBO(
-        res.width,
-        res.height,
-        ext.formatRGBA.internalFormat,
-        ext.formatRGBA.format,
-        ext.halfFloatTexType,
-        gl.NEAREST
-    );
-    render(target);
+    // Use 2D canvas method for cross-browser compatibility
+    let captureCanvas = document.createElement("canvas");
+    let captureSize = config.CAPTURE_RESOLUTION;
+    captureCanvas.width = captureSize;
+    captureCanvas.height = captureSize;
+    let ctx = captureCanvas.getContext("2d");
+    ctx.drawImage(canvas, 0, 0, captureSize, captureSize);
 
-    let texture = framebufferToTexture(target);
+    let imageData = ctx.getImageData(0, 0, captureSize, captureSize);
+    let pixels = imageData.data;
 
     let sumR = 0, sumG = 0, sumB = 0;
     let sumR2 = 0, sumG2 = 0, sumB2 = 0;
-    let pixelCount = texture.length / 4;
+    let pixelCount = pixels.length / 4;
 
-    for (let i = 0; i < texture.length; i += 4) {
-        sumR += texture[i];
-        sumG += texture[i + 1];
-        sumB += texture[i + 2];
-        sumR2 += texture[i] * texture[i];
-        sumG2 += texture[i + 1] * texture[i + 1];
-        sumB2 += texture[i + 2] * texture[i + 2];
+    for (let i = 0; i < pixels.length; i += 4) {
+        sumR += pixels[i];
+        sumG += pixels[i + 1];
+        sumB += pixels[i + 2];
+        sumR2 += pixels[i] * pixels[i];
+        sumG2 += pixels[i + 1] * pixels[i + 1];
+        sumB2 += pixels[i + 2] * pixels[i + 2];
     }
 
     let meanR = sumR / pixelCount;
@@ -335,23 +329,27 @@ function computeColorStandardDeviation() {
     let stdDevG = Math.sqrt(varianceG);
     let stdDevB = Math.sqrt(varianceB);
 
-    // Clean up
-    gl.deleteFramebuffer(target.fbo);
-    gl.deleteTexture(target.texture);
-
     return {
-        r: Math.round(stdDevR * 255),
-        g: Math.round(stdDevG * 255),
-        b: Math.round(stdDevB * 255)
+        r: Math.round(stdDevR),
+        g: Math.round(stdDevG),
+        b: Math.round(stdDevB)
     };
 }
 
 function framebufferToTexture(target) {
+    // NOTE: This function expects the target FBO to use RGBA8 format with UNSIGNED_BYTE type.
+    // Reading pixels with UNSIGNED_BYTE from floating-point framebuffers (RGBA16F/RGBA32F)
+    // is not supported and will fail with "Invalid format and type combination" errors.
     gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
     let length = target.width * target.height * 4;
-    let texture = new Float32Array(length);
-    gl.readPixels(0, 0, target.width, target.height, gl.RGBA, gl.FLOAT, texture);
-    return texture;
+    let texture = new Uint8Array(length);
+    gl.readPixels(0, 0, target.width, target.height, gl.RGBA, gl.UNSIGNED_BYTE, texture);
+    // Convert to Float32Array with normalized values (0.0-1.0 range)
+    let floatTexture = new Float32Array(length);
+    for (let i = 0; i < length; i++) {
+        floatTexture[i] = texture[i] / 255.0;
+    }
+    return floatTexture;
 }
 
 function normalizeTexture(texture, width, height) {
@@ -1709,10 +1707,11 @@ class FluidSimulationWebSocket {
 
     performConfigUpdate(key, value) {
         if (key in config) {
-            //config[key] = value;
             guiControllers[key].setValue(value);
+            this.socket.send(JSON.stringify({ type: "configUpdated", key: key }));
         } else {
             console.warn(`Received update for unknown config key: ${key}`);
+            this.socket.send(JSON.stringify({ type: "configUpdated", key: key, error: "unknown key" }));
         }
     }
 

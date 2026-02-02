@@ -9,9 +9,9 @@ class MoveContainerToAnalyzer(BaseTask):
         resources: BaseTask.ResourcesType,
     ) -> BaseTask.OutputType:
         robot_arm = devices["robot_arm"]
-        color_analyzer = devices["color_analyzer"]
+        color_station = devices["color_station"]
 
-        target_location = color_analyzer.meta["location"]
+        target_location = color_station.meta["location"]
 
         resources["beaker"] = robot_arm.move_container(resources["beaker"], target_location)
 

@@ -13,10 +13,9 @@ tasks:
       robot_arm:
         lab_name: color_lab
         name: robot_arm
-      color_mixer:
+      color_station:
         allocation_type: dynamic
-        device_type: color_mixer
-        allowed_labs: [color_lab]
+        device_type: color_station
     resources:
       beaker:
         allocation_type: dynamic
@@ -28,7 +27,7 @@ tasks:
     desc: Mix the colors in the container
     duration: 20
     devices:
-      color_mixer: retrieve_container.color_mixer
+      color_station: retrieve_container.color_station
     resources:
       beaker: retrieve_container.beaker
     parameters:
@@ -42,34 +41,19 @@ tasks:
       black_strength: eos_dynamic
       mixing_time: eos_dynamic
       mixing_speed: eos_dynamic
-    dependencies: [retrieve_container]
-
-  - name: move_container_to_analyzer
-    type: Move Container to Analyzer
-    desc: Move the container to the color analyzer
-    duration: 5
-    devices:
-      robot_arm:
-        lab_name: color_lab
-        name: robot_arm
-      color_mixer: mix_colors.color_mixer
-      color_analyzer:
-        allocation_type: dynamic
-        device_type: color_analyzer
-        allowed_labs: [color_lab]
-    resources:
-      beaker: mix_colors.beaker
-    dependencies: [mix_colors]
+    dependencies:
+      - retrieve_container
 
   - name: analyze_color
     type: Analyze Color
     desc: Analyze the color of the solution in the container and output the RGB values
     duration: 2
     devices:
-      color_analyzer: move_container_to_analyzer.color_analyzer
+      color_station: mix_colors.color_station
     resources:
-      beaker: move_container_to_analyzer.beaker
-    dependencies: [move_container_to_analyzer]
+      beaker: mix_colors.beaker
+    dependencies:
+      - mix_colors
 
   - name: score_color
     type: Score Color
@@ -82,7 +66,8 @@ tasks:
       total_color_volume: mix_colors.total_color_volume
       max_total_color_volume: 300.0
       target_color: eos_dynamic
-    dependencies: [analyze_color]
+    dependencies:
+      - analyze_color
 
   - name: empty_container
     type: Empty Container
@@ -95,12 +80,14 @@ tasks:
       cleaning_station:
         allocation_type: dynamic
         device_type: cleaning_station
-        allowed_labs: [color_lab]
+        allowed_labs:
+          - color_lab
     resources:
       beaker: analyze_color.beaker
     parameters:
       emptying_location: emptying_location
-    dependencies: [analyze_color]
+    dependencies:
+      - analyze_color
 
   - name: clean_container
     type: Clean Container
@@ -112,7 +99,8 @@ tasks:
       beaker: empty_container.beaker
     parameters:
       duration: 2
-    dependencies: [empty_container]
+    dependencies:
+      - empty_container
 
   - name: store_container
     type: Store Container
@@ -126,4 +114,5 @@ tasks:
       beaker: clean_container.beaker
     parameters:
       storage_location: container_storage
-    dependencies: [clean_container]
+    dependencies:
+      - clean_container

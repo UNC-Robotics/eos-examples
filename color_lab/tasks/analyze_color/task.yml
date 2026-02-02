@@ -2,8 +2,8 @@ type: Analyze Color
 desc: Analyze the color of a solution
 
 devices:
-  color_analyzer:
-    type: color_analyzer
+  color_station:
+    type: color_station
 
 input_resources:
   beaker:
