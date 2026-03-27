@@ -1,5 +1,5 @@
 type: color_mixing
-desc: Experiment to find optimal parameters to synthesize a desired color
+desc: Protocol to find optimal parameters to synthesize a desired color
 
 labs:
   - color_lab
@@ -9,6 +9,7 @@ tasks:
     type: Retrieve Container
     desc: Get a container from storage and move it to the color dispenser
     duration: 5
+    dependencies: []
     devices:
       robot_arm:
         lab_name: color_lab
@@ -20,16 +21,11 @@ tasks:
       beaker:
         allocation_type: dynamic
         resource_type: beaker
-    dependencies: []
 
   - name: mix_colors
     type: Mix Colors
     desc: Mix the colors in the container
     duration: 20
-    devices:
-      color_station: retrieve_container.color_station
-    resources:
-      beaker: retrieve_container.beaker
     parameters:
       cyan_volume: eos_dynamic
       cyan_strength: eos_dynamic
@@ -43,17 +39,21 @@ tasks:
       mixing_speed: eos_dynamic
     dependencies:
       - retrieve_container
+    devices:
+      color_station: retrieve_container.color_station
+    resources:
+      beaker: retrieve_container.beaker
 
   - name: analyze_color
     type: Analyze Color
     desc: Analyze the color of the solution in the container and output the RGB values
     duration: 2
+    dependencies:
+      - mix_colors
     devices:
       color_station: mix_colors.color_station
     resources:
       beaker: mix_colors.beaker
-    dependencies:
-      - mix_colors
 
   - name: score_color
     type: Score Color
@@ -63,8 +63,6 @@ tasks:
       red: analyze_color.red
       green: analyze_color.green
       blue: analyze_color.blue
-      total_color_volume: mix_colors.total_color_volume
-      max_total_color_volume: 300.0
       target_color: eos_dynamic
     dependencies:
       - analyze_color
@@ -73,6 +71,10 @@ tasks:
     type: Empty Container
     desc: Empty the container and move it to the cleaning station
     duration: 5
+    parameters:
+      emptying_location: emptying_location
+    dependencies:
+      - analyze_color
     devices:
       robot_arm:
         lab_name: color_lab
@@ -84,35 +86,31 @@ tasks:
           - color_lab
     resources:
       beaker: analyze_color.beaker
-    parameters:
-      emptying_location: emptying_location
-    dependencies:
-      - analyze_color
 
   - name: clean_container
     type: Clean Container
     desc: Clean the container by rinsing it with distilled water
     duration: 5
-    devices:
-      cleaning_station: empty_container.cleaning_station
-    resources:
-      beaker: empty_container.beaker
     parameters:
       duration: 2
     dependencies:
       - empty_container
+    devices:
+      cleaning_station: empty_container.cleaning_station
+    resources:
+      beaker: empty_container.beaker
 
   - name: store_container
     type: Store Container
     desc: Store the container back in the container storage
     duration: 5
+    parameters:
+      storage_location: container_storage
+    dependencies:
+      - clean_container
     devices:
       robot_arm:
         lab_name: color_lab
         name: robot_arm
     resources:
       beaker: clean_container.beaker
-    parameters:
-      storage_location: container_storage
-    dependencies:
-      - clean_container

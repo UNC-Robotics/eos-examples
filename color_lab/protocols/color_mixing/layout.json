@@ -1,0 +1,30 @@
+{
+  "retrieve_container": {
+    "x": 0,
+    "y": -80
+  },
+  "mix_colors": {
+    "x": 500,
+    "y": -200
+  },
+  "analyze_color": {
+    "x": 980,
+    "y": -120
+  },
+  "score_color": {
+    "x": 1480,
+    "y": 0
+  },
+  "empty_container": {
+    "x": 1480,
+    "y": -240
+  },
+  "clean_container": {
+    "x": 2040,
+    "y": -80
+  },
+  "store_container": {
+    "x": 2620,
+    "y": -80
+  }
+}

@@ -67,9 +67,3 @@ input_parameters:
     type: int
     unit: n/a
     desc: The speed at which to stir the contents of the container
-
-output_parameters:
-  total_color_volume:
-    type: float
-    unit: mL
-    desc: The total volume of dispensed color

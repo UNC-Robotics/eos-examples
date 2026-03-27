@@ -36,4 +36,4 @@ class MixColors(BaseTask):
         )
         resources["beaker"].meta["clean"] = False
 
-        return {"total_color_volume": cyan_volume + magenta_volume + yellow_volume + black_volume}, resources, None
+        return {}, resources, None
