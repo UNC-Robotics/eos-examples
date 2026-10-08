@@ -1,5 +1,0 @@
-type: cleaning_station
-desc: Cleaning for station for rinsing a container
-
-init_parameters:
-  port: 5001

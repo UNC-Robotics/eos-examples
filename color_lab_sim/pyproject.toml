@@ -1,0 +1,12 @@
+[project]
+name = "color_lab_sim"
+version = "1.0.0"
+description = "Example EOS package for color mixing"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp",
+    "claude-agent-sdk>=0.1.48",
+    "websockets",
+    "eos>=0.30,<0.31",
+]

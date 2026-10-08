@@ -1,5 +1,0 @@
-type: color_station
-desc: Color mixing and analysis station backed by a fluid simulation
-
-init_parameters:
-  port: 5003
